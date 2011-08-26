@@ -1,7 +1,8 @@
-def show(triangle):
+def show(triangle, center=True):
     '''print a readable triangle, for fast debugging purpose'''
     for line in triangle:
-        print(' '*(n-(len(line)+1)//2), end='')
+        if center:
+            print(' '*(n-(len(line)+1)//2), end='')
         for each in line:
             print(each, end='')
         print('')
