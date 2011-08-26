@@ -1,3 +1,11 @@
+def show(triangle):
+    '''print a readable triangle, for fast debugging purpose'''
+    for line in triangle:
+        print(' '*(n-(len(line)+1)//2), end='')
+        for each in line:
+            print(each, end='')
+        print('')
+
 def retri_dn(i, j, s=1):
     '''recursive function finding bigger triangle downward'''
     if i+s <= n-j//2-1:
@@ -47,6 +55,8 @@ while True:
                 triangle[i].append(0)
             else:
                 triangle[i].append(1)
+    ## uncomment below to see the triangle ##
+    # show(triangle)
 
     ## create list of biggest size of each small triangle ##
     bigtri = []

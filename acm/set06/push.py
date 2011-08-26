@@ -1,5 +1,5 @@
 def show(map):
-    '''print a readable map, for fast debuging propose'''
+    '''print a readable map, for fast debugging purpose'''
     for line in map:
         print(line)
 
