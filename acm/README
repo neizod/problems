@@ -1,1 +1,7 @@
 My ACM-ICPC algorithm book (in Python).
+
+Problems souce & sort:
+http://acm.zju.edu.cn/onlinejudge/showProblemsets.do
+
+To test program:
+$ python3 probname.py < probname.in
