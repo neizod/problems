@@ -1,4 +1,5 @@
 def retri_dn(i, j, s=1):
+    '''recursive function finding bigger triangle downward'''
     if i+s <= n-j//2-1:
         chk = True
         if triangle[i+s][j] == 1:
@@ -13,6 +14,7 @@ def retri_dn(i, j, s=1):
     return s
 
 def retri_up(i, j, s=1):
+    '''recursive function finding bigger triangle upward'''
     if i-s >= 0 and j+2*s <= 2*(n-i-1):
         chk = True
         if triangle[i-s][j+2*s] == 1:
@@ -36,6 +38,7 @@ while True:
     if n == 0:
         break
 
+    ## create triangle in form of list, the 1st index of each row always be 0 ##
     triangle = [[] for i in range(n)]
     for i in range(n):
         raw = input()
@@ -45,16 +48,19 @@ while True:
             else:
                 triangle[i].append(1)
 
+    ## create list of biggest size of each small triangle ##
     bigtri = []
+    ## loop through all small triangle ##
     for i in range(n):
         for j in range(0, 2*(n-i)-1):
+            ## and make sure to use upward or downward checking ##
             if j%2 == 0:
                 if triangle[i][j] == 1:
                     bigtri.append(retri_dn(i, j))
             else:
                 if triangle[i][j] == 1:
                     bigtri.append(retri_up(i, j))
-    
+ 
     print('Triangle #{}'.format(scene))
     print('The largest triangle area is {}.'.format(max(bigtri)**2))
     print('')

@@ -97,10 +97,10 @@ while True:
             if raw[j] == 4:    # the man
                 xman, yman = j+1, i+1
                 raw[j] = 0
-            if raw[j] == 3: # the goal
+            if raw[j] == 3:    # the goal
                 xfin, yfin = j+1, i+1
                 raw[j] = 0
-            if raw[j] == 2: # the box
+            if raw[j] == 2:    # the box
                 xbox, ybox = j+1, i+1
                 raw[j] = 0
         omap.append([1] + [raw[n] for n in range(width)] + [1])
