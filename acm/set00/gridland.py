@@ -10,7 +10,7 @@ for i in range(scene):
     size = int(raw[0]) * int(raw[1])
 
     ## this is mathematics approch, try it yourself and observe! ##
-    if size%2 == 10:
+    if size%2 == 1:
         size = size - 1 + math.sqrt(2)
 
     ## print the answer ##
