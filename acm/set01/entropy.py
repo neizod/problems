@@ -6,7 +6,7 @@ class Tree:
         self.r = r    # rightside
 
 def push(pop1, pop2):
-    '''make sub-tree which has pop values as left-right node, then push in and sort the tque'''
+    '''make sub-tree which pop values are leaf nodes, then push and sort tque'''
     global tque
     new = Tree(pop1.n + pop2.n, pop1, pop2)
 
@@ -26,7 +26,7 @@ def pop(que):
     return out
 
 def poplt():
-    '''pop either lque or tque which has minimum value, return None when both are empty'''
+    '''pop either lque or tque which has min value, return None when empty'''
     global lque, tque
 
     if len(lque) == 0 and len(tque) == 0:
@@ -61,7 +61,7 @@ while True:
     if raw == 'END':
         break
 
-    ## get frequency of each alphabet then sort from minimum to maximum to list-deque##
+    ## get frequency of each alphabet then sort from min to max to list-deque##
     dict = {}
     for c in raw:
         if c not in dict:
