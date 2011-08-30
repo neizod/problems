@@ -36,6 +36,8 @@ def get(text):
 
 def pattern(text):
     '''check if the text are in correct pattern'''
+    if len(text) > 5:
+        return False
     chk = True
     for i in range(len(text) - 1):
         if ord(text[i]) >= ord(text[i+1]):
