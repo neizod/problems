@@ -1,0 +1,9 @@
+﻿for test in range(int(input())):
+    size = int(input())
+
+    a = sorted([int(val) for val in input().split()])
+    b = sorted([int(val) for val in input().split()], reverse=True)
+
+    scalar = sum([a[i]*b[i] for i in range(size)])
+
+    print("Case #{}: {}".format(test+1, scalar))
