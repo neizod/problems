@@ -1,4 +1,4 @@
-for t in range(int(input())):
+for test in range(int(input())):
     n, *points = [int(v) for v in input().split()]
     x = sum(points)
 
@@ -12,4 +12,4 @@ for t in range(int(input())):
 
     need = [(avg - p) * 100 / x if not b else 0 for p, b in zip(points, nomore)]
 
-    print('Case #{}: {}'.format(t+1, ' '.join('{:.6f}'.format(p) for p in need)))
+    print('Case #{}: {}'.format(test+1, ' '.join('{:.6f}'.format(p) for p in need)))
