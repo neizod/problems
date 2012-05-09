@@ -1,7 +1,7 @@
 from math import ceil
 
 for test in range(int(input())):
-    gg, surprise, expected, *point = (int(n) for n in input().split())
+    gg, surprise, expected, *point = [int(n) for n in input().split()]
     point.sort(reverse=True)
 
     count = 0
