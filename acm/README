@@ -5,3 +5,5 @@ http://acm.zju.edu.cn/onlinejudge/showProblemsets.do
 
 To test program:
 $ python3 probname.py < probname.in
+
+/!\ Caution: Since I don't have the full test case, there might be some bugs in some questions.
