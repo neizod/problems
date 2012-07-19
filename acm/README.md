@@ -7,9 +7,13 @@ My ACM-ICPC algorithm book (in Python)
 
 This is an algorithm book, so it will only give out a (rundable) outline of each questions (in Python).
 
-Problems source & sort from: <http://acm.zju.edu.cn/onlinejudge/showProblemsets.do>
-
-To test program:
+Test Program
+------------
 
     $ python3 probname.py < probname.in
 
+Problems Source
+---------------
+
+- <http://uva.onlinejudge.org>
+- <http://acm.zju.edu.cn/onlinejudge/>
