@@ -15,5 +15,5 @@ Test Program
 Problems Source
 ---------------
 
-- <http://uva.onlinejudge.org>
+- <http://uva.onlinejudge.org> and <http://livearchive.onlinejudge.org/>
 - <http://acm.zju.edu.cn/onlinejudge/>
