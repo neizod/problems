@@ -11,9 +11,9 @@ def repile(minimum, remain_piles, remain_dishes, case, stack=[]):
     if remain_piles == 1:
         if remain_dishes >= stack[-1]:
             case.append(stack+[remain_dishes])
-
-    for each in range(minimum, remain_dishes):
-        repile(each, remain_piles-1, remain_dishes-each, case, stack+[each])
+    elif remain_dishes >= minimum * remain_piles:
+        for each in range(minimum, remain_dishes):
+            repile(each, remain_piles-1, remain_dishes-each, case, stack+[each])
 
 
 for test in range(int(input())):
