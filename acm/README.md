@@ -1,25 +1,23 @@
-My ACM-ICPC algorithm book
-==========================
+ACM-ICPC
+========
 
     /!\ Caution:
         Since I don't have the full test case, there might be some bugs.
         If you have full test case & answer sheet, please raise an issue.
 
-This is an algorithm book, so it will only give out a (rundable) outline of each questions mainly in Python.
-
-There also, for some problems, an optimized version in other programming language.
+Original ACM-ICPC require program to be written in Pascal / C / C++ / Java. Since I'm not good with those language, I write it in Python.
 
 Test Program
 ------------
 
 - Python 3
 
-        $ python3 probname.py < probname.in
+    $ python3 probname.py < probname.in
 
 - Haskell
 
-        $ ghc probname.hs
-        $ ./probname < probname.in
+    $ ghc probname.hs
+    $ ./probname < probname.in
 
 Problems Source
 ---------------
