@@ -22,7 +22,7 @@ If any, input from `stdin` will be provide with `input.in` file. Look out for so
 
 - Haskell: I do recommend to compile and run, not `runhaskell`.
 
-        $ ghci -O2 problem-name.hs
+        $ ghc -O2 problem-name.hs
         $ ./problem-name
 
 After test programs, you might want to run `git clean -df`.
