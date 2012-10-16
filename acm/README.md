@@ -7,18 +7,6 @@ ACM-ICPC
 
 Original ACM-ICPC require program to be written in Pascal / C / C++ / Java. Since I'm not good with those language, I write it in Python.
 
-Test Program
-------------
-
-- Python 3
-
-    $ python3 probname.py < probname.in
-
-- Haskell
-
-    $ ghc probname.hs
-    $ ./probname < probname.in
-
 Problems Source
 ---------------
 
