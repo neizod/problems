@@ -32,5 +32,4 @@ Problems Source
 
 - ACM-ICPC
 - Google Code Jam
-- Project Euler
 
