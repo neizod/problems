@@ -1,15 +1,10 @@
 ﻿import re
 
-# one-liner version
-exit(next('\n'.join('Case #{}: {}'.format(test+1, ''.join(str(len([1 for word in alien_dict if re.match(re.sub('\(|\)', (lambda c: chr((ord(c.group())<<1)+11)), alien_input), word) is not None])) for alien_input in [input()])) for test in range(sample)) for alien_dict, sample in [(lambda args: [[input() for word in range(args[1])], args[2]])([int(val) for val in input().split()])]))
-
-###############################################################################
-
-
-word_len, word_dict, sample = [int(val) for val in input().split()]
+word_len, word_dict, sample = [int(n) for n in input().split()]
 alien_dict = [input() for word in range(word_dict)]
 
 for test in range(sample):
-    alien_regex = re.sub('\(|\)', (lambda c: chr((ord(c.group())<<1)+11)), input())
-    alien_match = len([1 for word in alien_dict if re.match(alien_regex, word) is not None])
+    alien_regex = input().replace('(','[').replace(')',']')
+    alien_match = sum(1 for word in alien_dict if re.match(alien_regex, word))
     print('Case #{}: {}'.format(test+1, alien_match))
+
