@@ -1,55 +1,53 @@
-def dep_arr(time_table):
-    return [days_min(t) for t in time_table.split()]
-
 def days_min(time_str):
     hh, mm = [int(t) for t in time_str.split(':')]
     return 60 * hh + mm
 
-def make_chain(trip, togo_table, turnaround):
-    for i, togo in enumerate(togo_table):
-        if trip[-1] + turnaround <= togo[0]:
-            trip.extend(togo_table.pop(i))
+def dep_arr(time_table, turn_around):
+    dep, arr = [days_min(t) for t in time_table.split()]
+    return [dep, arr+turn_around]
+
+def make_chain(trip, table):
+    for i, togo in enumerate(table):
+        if trip[-1] <= togo[0]:
+            trip.extend(table.pop(i))
             return True
     return False
 
-def make_trip(table_a, table_b, trip_a, trip_b, turnaround):
-    if table_a and table_b:
-        if table_a[0] < table_b[0]:
-            trip = table_a.pop(0)
-            flag = 1
-            togo_table = table_b
-            while make_chain(trip, togo_table, turnaround):
-                flag ^= 1
-                togo_table = table_b if flag else table_a
-            trip_a.append(trip)
-        else:
-            trip = table_b.pop(0)
-            flag = 0
-            togo_table = table_a
-            while make_chain(trip, togo_table, turnaround):
-                flag ^= 1
-                togo_table = table_b if flag else table_a
-            trip_b.append(trip)
-    elif not table_a:
-        trip_b.append(table_b.pop())
-    elif not table_b:
-        trip_a.append(table_a.pop())
+def make_trip(tables, trips, flag=0):
+    if tables[0] > tables[1]:
+        flag ^= 1
 
-def make_schedual(table_a, table_b):
-    trip_a = []
-    trip_b = []
-    while any([table_a, table_b]):
-        make_trip(table_a, table_b, trip_a, trip_b, turnaround)
-    return trip_a, trip_b
+    if tables[flag]:
+        trip = tables[flag].pop(0)
+        switch = 1
+        while make_chain(trip, tables[flag^switch]):
+            switch ^= 1
+        trips[flag].append(trip)
+    else:
+        while tables[flag^1]:
+            trips[flag^1].append(tables[flag^1].pop())
 
-for test in range(int(input())):
-    turnaround = int(input())
+def make_schedual(a, b):
+    tables = [a, b]
+    trips = [[] for _ in range(2)]
+    while any(tables):
+        make_trip(tables, trips)
+    return trips
+
+def testcase(test_no):
+    turn_around = int(input())
     a, b = [int(n) for n in input().split()]
+    a = sorted(dep_arr(input(), turn_around) for _ in range(a))
+    b = sorted(dep_arr(input(), turn_around) for _ in range(b))
 
-    table_a = sorted(dep_arr(input()) for _ in range(a))
-    table_b = sorted(dep_arr(input()) for _ in range(b))
+    a, b = make_schedual(a, b)
+    return len(a), len(b)
 
-    a, b = make_schedual(table_a, table_b)
+def main():
+    for test in range(int(input())):
+        output = testcase(test)
+        print('Case #{}: {} {}'.format(test+1, *output))
 
-    print('Case #{}: {} {}'.format(test+1, len(a), len(b)))
+if __name__ == '__main__':
+    main()
 
