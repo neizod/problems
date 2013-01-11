@@ -32,15 +32,15 @@ def sink_it(grid, size):
             rewalk(x, y, grid, sink, size, area)
     return sink
 
-def testcase(test_no):
+def test(case):
     size = point(*[int(n) for n in input().split()][::-1])
     grid = [[int(n) for n in input().split()] for i in range(size.y)]
     return sink_it(grid, size)
 
 def main():
-    for test in range(int(input())):
-        output = testcase(test)
-        print('Case #{}:'.format(test+1))
+    for case in range(int(input())):
+        output = test(case)
+        print('Case #{}:'.format(case+1))
         for line in output:
             print(' '.join(line))
 

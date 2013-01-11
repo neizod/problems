@@ -1,6 +1,6 @@
 from math import ceil
 
-for test in range(int(input())):
+for case in range(int(input())):
     gg, surprise, expected, *point = [int(n) for n in input().split()]
     point.sort(reverse=True)
 
@@ -14,4 +14,4 @@ for test in range(int(input())):
             count += 1
             surprise -= 1
 
-    print('Case #{}: {}'.format(test+1, count))
+    print('Case #{}: {}'.format(case+1, count))

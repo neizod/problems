@@ -8,13 +8,20 @@
             'w': '9', 'x': '99', 'y': '999', 'z': '9999',
             ' ': '0' }
 
-for test in range(int(input())):
+def test(case):
     word = input()
-
     press = ''
     for c in word:
-        if len(press) and press[-1] == dict_t9[c][0]:
+        if press and press[-1] == dict_t9[c][0]:
             press += ' '
         press += dict_t9[c]
+    return press
 
-    print('Case #{}: {}'.format(test+1, press))
+def main():
+    for case in range(int(input())):
+        press = test(case)
+        print('Case #{}: {}'.format(test+1, press))
+
+if __name__ == '__main__':
+    main()
+

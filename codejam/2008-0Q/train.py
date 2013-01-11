@@ -44,9 +44,9 @@ def testcase(test_no):
     return len(a), len(b)
 
 def main():
-    for test in range(int(input())):
-        output = testcase(test)
-        print('Case #{}: {} {}'.format(test+1, *output))
+    for case in range(int(input())):
+        output = test(case)
+        print('Case #{}: {} {}'.format(case+1, *output))
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,4 @@
-for test in range(int(input())):
+for case in range(int(input())):
     name = {input() for _ in range(int(input()))}
 
     result = 0
@@ -10,5 +10,5 @@ for test in range(int(input())):
             used = name.copy() - {query}
             result += 1
 
-    print('Case #{}: {}'.format(test+1, result))
+    print('Case #{}: {}'.format(case+1, result))
 

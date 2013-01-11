@@ -1,25 +1,22 @@
-﻿def cd(path, mkdir_count=False):
-    global root, count
-    cwd = root
-
+﻿def cd(path, cwd, count=0):
     for dir in path:
         if dir not in cwd:
-            if mkdir_count:
-                count += 1
-            cwd[dir] = {}
-        cwd = cwd[dir]
+            count += 1
+        cwd = cwd.setdefault(dir, {})
+    return count
 
-##############################################################################
-
-for test in range(int(input())):
+def test(case):
     exist, mkdir = [int(val) for val in input().split()]
-
-    root = {}    
+    root = {}
     for path in range(exist):
-        cd(input().split('/')[1:])
+        cd(input().split('/')[1:], root)
+    return sum(cd(input().split('/')[1:], root) for path in range(mkdir))
 
-    count = 0
-    for path in range(mkdir):
-        cd(input().split('/')[1:], True)
+def main():
+    for case in range(int(input())):
+        output = test(case)
+        print('Case #{}: {}'.format(case+1, output))
 
-    print('Case #{}: {}'.format(test+1, count))
+if __name__ == '__main__':
+    main()
+
