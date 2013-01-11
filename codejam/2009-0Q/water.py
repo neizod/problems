@@ -1,37 +1,49 @@
-chk_order = ((0,-1), (-1,0), (1,0), (0,1))
+from collections import namedtuple
+point = namedtuple('point', 'x, y')
 
-def rewalk(x, y):
-    global grid, sink, chk_order, area
+def smallest_neig(x, y, grid, size):
+    dest = point(x, y)
+    smallest = grid[y][x]
+    for chk in [point(0, -1), point(-1, 0), point(1, 0), point(0, 1)]:
+        go = point(x + chk.x, y + chk.y)
+        if 0 <= go.x < size.x and 0 <= go.y < size.y:
+            value = grid[go.y][go.x] 
+            if value < smallest:
+                smallest = value
+                dest = go
+    return dest
 
-    if sink[y][x] != 0:
+def rewalk(x, y, grid, sink, size, area):
+    if sink[y][x]:
         return sink[y][x]
 
-    diff = tuple(grid[y+chk_y][x+chk_x] for chk_x, chk_y in chk_order)
-    go_x, go_y = chk_order[diff.index(min(diff))]
-    if grid[y][x] > grid[y+go_y][x+go_x]:
-        sink[y][x] = rewalk(x+go_x, y+go_y)
-        return sink[y][x]
+    dest = smallest_neig(x, y, grid, size)
+    if grid[y][x] > grid[dest.y][dest.x]:
+        sink[y][x] = rewalk(dest.x, dest.y, grid, sink, size, area)
     else:
-        area += 1
-        sink[y][x] = chr(area)
-        return sink[y][x]
+        sink[y][x] = area.pop(0)
+    return sink[y][x]
 
-################################################################################
+def sink_it(grid, size):
+    sink = [[None for i in range(size.x)] for i in range(size.y)]
+    area = [chr(97+i) for i in range(26)]
+    for y in range(size.y):
+        for x in range(size.x):
+            rewalk(x, y, grid, sink, size, area)
+    return sink
 
-for test in range(int(input())):
-    size_y, size_x = [int(val) for val in input().split()]
+def testcase(test_no):
+    size = point(*[int(n) for n in input().split()][::-1])
+    grid = [[int(n) for n in input().split()] for i in range(size.y)]
+    return sink_it(grid, size)
 
-    grid = [[10000] * (size_x+2)]
-    grid += [[10000] + [int(val) for val in input().split()] + [10000] for i in range(size_y)]
-    grid += [[10000] * (size_x+2)]
+def main():
+    for test in range(int(input())):
+        output = testcase(test)
+        print('Case #{}:'.format(test+1))
+        for line in output:
+            print(' '.join(line))
 
-    sink = [[0 for i in range(size_x+2)] for i in range(size_y+2)]
+if __name__ == '__main__':
+    main()
 
-    area = 96
-    for y in range(1, size_y+1):
-        for x in range(1, size_x+1):
-            rewalk(x, y)
-
-    print('Case #{}:'.format(test+1))
-    for line in sink[1:-1]:
-        print(' '.join(line[1:-1]))
