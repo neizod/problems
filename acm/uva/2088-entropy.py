@@ -1,96 +1,52 @@
-class Tree:
-    '''since python doen't implement tree, implement it!'''
-    def __init__(self, n=0, l=None, r=None):
-        self.n = n    # node's value
-        self.l = l    # leftside
-        self.r = r    # rightside
+from collections import Counter
 
-def push(pop1, pop2):
-    '''make sub-tree which pop values are leaf nodes, then push and sort tque'''
-    global tque
-    new = Tree(pop1.n + pop2.n, pop1, pop2)
+class Node:
+    def is_terminated(self):
+        return self.left is None and self.right is None
 
-    ins = False
-    for i in range(len(tque)):
-        if tque[i].n >= new.n:
-            tque.insert(i, new)
-            ins = True
+    def total(self, depth=0):
+        if self.is_terminated():
+            return self.value * depth
+        return self.left.total(depth+1) + self.right.total(depth+1)
+
+    @classmethod
+    def from_leaves(cls, left, right):
+        return cls('', left.value + right.value, left, right)
+
+    def __init__(self, symbol='', value=0, left=None, right=None):
+        self.symbol = symbol
+        self.value = value
+        self.left = left
+        self.right = right
+
+    def __repr__(self):
+        if self.is_terminated():
+            return 'Node({!r}, {})'.format(self.symbol, self.value)
+        return 'Node({!r}, {}, {!r}, {!r})'.format( self.symbol, self.value,
+                                                    self.left,   self.right )
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+
+def make_tree(queue):
+    import heapq as hq
+    queue = queue[:]
+    hq.heapify(queue)
+    while queue:
+        if len(queue) == 1:
             break
-    if not ins:
-        tque.append(new)
+        left = hq.heappop(queue)
+        right = hq.heappop(queue)
+        hq.heappush(queue, Node.from_leaves(left, right))
+    return queue.pop()
 
-def pop(que):
-    '''just ordinary pop function, for shorten code'''
-    out = que[0]
-    del que[0]
-    return out
-
-def poplt():
-    '''pop either lque or tque which has min value, return None when empty'''
-    global lque, tque
-
-    if len(lque) == 0 and len(tque) == 0:
-        return None
-    if len(lque) == 0:
-        return pop(tque)
-    elif len(tque) == 0:
-        return pop(lque)
-    else:
-        if lque[0].n <= tque[0].n:
-            return pop(lque)
-        else:
-            return pop(tque)
-
-def get(node, d=0):
-    ''' get the value of node's path multiplication by its times occurent'''
-    global sumtable
-    if node.l == None and node.r == None:
-        sumtable.append(node.n*d)
-    if node.l != None:
-        get(node.l, d+1)
-    if node.r != None:
-        get(node.r, d+1)
-
-################################################################################
-
-import re
 
 while True:
-    raw = input()
-    raw = re.sub('\r|\n', '', raw)
+    raw = input().strip()
     if raw == 'END':
         break
-
-    ## get frequency of each alphabet then sort from min to max to list-deque##
-    dict = {}
-    for c in raw:
-        if c not in dict:
-            dict[c] = 1
-        else:
-            dict[c] += 1
-    lque = sorted(dict.values())
-
-    ## create sub-tree for each sorted value ##
-    for i in range(len(lque)):
-        lque[i] = Tree(lque[i])
-
-    ## create tree-deque for collecting each sub-tree ##
-    tque = []
-
-    ## Huffman algorithm ##
-    while True:
-        pop1 = poplt()
-        pop2 = poplt()
-        if pop2 == None:
-            break
-        push(pop1, pop2)
-    root = pop1
-
-    ## recursive get every leaf's path multiplication by its time occurent ##
-    sumtable = []
-    get(root)
-
-    ## print out the answer. hooray! ##
-    a = 8*root.n
-    b = sum(sumtable)
-    print("{0} {1} {2:.1f}".format(a, b, a/b))
+    tree = make_tree([Node(k, v) for k, v in Counter(raw).most_common()])
+    full = 8 * tree.value
+    entropy = tree.total()
+    print(full, entropy, format(full/entropy, '.1f'))
