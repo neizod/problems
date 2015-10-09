@@ -16,7 +16,7 @@ class Frac {
     protected:
         int numer, denom;
 
-        void cancle_common() {
+        void cancel_commons() {
             int common = gcd(numer, denom);
             numer /= common;
             denom /= common;
@@ -24,12 +24,12 @@ class Frac {
 
     public:
         Frac(int numer, int denom):
-            numer(numer), denom(denom) { cancle_common(); }
+            numer(numer), denom(denom) { cancel_commons(); }
 
         void operator&= (Frac other) {
             numer += other.numer;
             denom += other.denom;
-            cancle_common();
+            cancel_commons();
         }
 
         bool operator!= (Frac other) {
