@@ -35,13 +35,13 @@ Compile with C++11 standard, or above. e.g.
 
     $ g++ --std=c++11 solution.cpp      # use C++11 standard.
     $ g++ --std=c++0x solution.cpp      # same(?) as above.
-    $ g++ --std=c++1y solution.cpp      # use C++14 standard, this might not yet wildly acceptable by some judges.
+    $ g++ --std=c++1y solution.cpp      # use C++14 standard, not yet accepted by some judges.
 
 Set default compiling option can also be done within `.bashrc` this way:
 
     $ grep g++ ./bashrc
     alias g++="g++ --std=c++11"
-    $ g++ solution.cpp                  # now use C++11 standard without need of specify it over and over.
+    $ g++ solution.cpp                  # now use C++11 standard by default.
     $ \g++ solution.cpp                 # fall back to C++98 standard.
 
 If not given output filename, a solution file will be named `a.out`, so here is how to invoke it:
@@ -58,8 +58,50 @@ Two options here: for quick test use `runhaskell` to interprete code on the fly,
     $ ghc -O2 solution.hs               # fastest: tell compiler to optimize it.
     $ ./solution                        # invoke program
 
+### Smart Testing
 
-After testing programs, you might want to run `git clean -df` to delete compiled solution from harddisk to save spaces.
+A simple way to test is to type in all this text:
+
+    $ ./solution                        # or ./a.out, or ./solution.py, or blah blah blah
+    input line 1
+    input line 2
+    input line ...
+    Ctrl-D                              # require by some problems that need EOF at the end.
+    output line 1
+    output line 2
+    output line ...
+
+To save those typing strokes (and reduce typing errors), a redirection technique can be use here with `<<` symbol, follow by EOF mark, input text, and EOF mark again. e.g.
+
+    $ ./solution << E
+    input line 1
+    input line 2
+    input line ...
+    E
+    output line 1
+    output line 2
+    output line ...
+
+Or save the entire input text to a file. This time use just `<` then follow by filename. Be sure to end line in UNIX style (`\n`), not Windows style (`\r\n`).
+
+    $ cat problem.in
+    input line 1
+    input line 2
+    input line ...
+    $ ./solution < problem.in    
+    output line 1
+    output line 2
+    output line ...
+
+Finally, this test can be nearly full automation with the use of `diff` program, and `answer.out` output file. i.e.
+
+    $ ./solution < problem.in | diff - answer.out
+    $                                   # corrected answer will return prompt w/o complain.
+
+
+### Clean Up
+
+After testing programs, you might want to run `git clean -df` to delete compiled solution from harddisk to save spaces. This action will also delete other files that is not yet recognize into Git repository, so use with your own risk.
 
 
 Problems Source
