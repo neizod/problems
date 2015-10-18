@@ -10,6 +10,7 @@ Original ACM-ICPC require program to be written in Pascal / C / C++ / Java. Sinc
 Problems Source
 ---------------
 
-- <http://uva.onlinejudge.org> and <http://livearchive.onlinejudge.org/>
-- <http://acm.zju.edu.cn/onlinejudge/>
-- <http://www.cpe.ku.ac.th/icpc/?p=167>
+- UVa: <https://uva.onlinejudge.org>
+- Live Archive: <https://icpcarchive.ecs.baylor.edu/>
+- ZOJ: <https://acm.zju.edu.cn/onlinejudge/>
+- Thai (KU): <https://www.cpe.ku.ac.th/icpc/?p=167>
