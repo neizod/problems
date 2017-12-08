@@ -1,64 +1,43 @@
-d = [' '] + [chr(97+i) for i in range(26)]
+#!/usr/bin/env python3
 
-def get(text):
-    '''get the encode number of valid text'''
-    global d
-    i = 1
-    c = [0, 0, 0, 0, 0]
 
-    while i <= 83681:
-        c[4] += 1
-        if c[4] > 26:
-            c[3] += 1
-            c[4] = c[3] + 1
-        if c[3] > 25:
-            c[2] += 1
-            c[3] = c[2] + 1
-            c[4] = c[3] + 1
-        if c[2] > 24:
-            c[1] += 1
-            c[2] = c[1] + 1
-            c[3] = c[2] + 1
-            c[4] = c[3] + 1
-        if c[1] > 23:
-            c[0] += 1
-            c[1] = c[0] + 1
-            c[2] = c[1] + 1
-            c[3] = c[2] + 1
-            c[4] = c[3] + 1
+def ascending_increment(ls, lim=26):
+    if not ls:
+        raise ValueError('Can not increase value of the sequence furthermore.')
+    if ls[-1] < lim:
+        ls[-1] += 1
+    else:
+        ls[:-1] = ascending_increment(ls[:-1], lim-1)
+        ls[-1] = ls[-2] + 1
+    return ls
 
-        word = ''
-        for j in range(5):
-            word += d[c[j]]
-        if text == word:
-            return i
-        i += 1
 
-def pattern(text):
-    '''check if the text are in correct pattern'''
-    if len(text) > 5:
-        return False
-    chk = True
-    for i in range(len(text) - 1):
-        if ord(text[i]) >= ord(text[i+1]):
-            chk = False
-    return chk
+def as_word(code):
+    return ''.join(chr(96+i) for i in code if i != 0)
 
-################################################################################
 
-import re
-
-while True:
+def make_word_space():
+    space = {}
+    position = 0
+    code = [0, 0, 0, 0, 0]
     try:
-        raw = input()
+        while True:
+            position += 1
+            code = ascending_increment(code)
+            space[as_word(code)] = position
+    except ValueError:
+        pass
+    return space
+
+
+def main():
+    space = make_word_space()
+    try:
+        while True:
+            print(space.get(input().strip(), 0))
     except EOFError:
-        break
+        pass
 
-    raw = re.sub('\r|\n', '', raw)
-    if not pattern(raw):
-        ## return 0 on invalid text ##
-        print(0)
-        continue
 
-    raw = ' '*(5-len(raw)) + raw
-    print(get(raw))
+if __name__ == '__main__':
+    main()

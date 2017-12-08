@@ -1,116 +1,122 @@
-def show(map):
-    '''print a readable map, for fast debugging purpose'''
-    for line in map:
-        print(line)
+#!/usr/bin/env python3
 
-def refill(x, y):
-    '''recursive fill in like paint program, change 0 to 4'''
-    if not 0 < x <= width or not 0 < y <= height:
-        return
-    if fmap[y][x] == 0:
-        fmap[y][x] = 4
-        refill(x+1, y)
-        refill(x, y+1)
-        refill(x-1, y)
-        refill(x, y-1)
+from enum import IntEnum
+from copy import deepcopy
 
-def rechk_mv(xbox, ybox, xman, yman, move=0):
-    '''recursive move box around map'''
-    global omap, fmap, finalmove
-    if xbox == xfin and ybox == yfin:
-        ## check if the box already in goal, this can be many approaches ##
-        finalmove.append(move)
 
-    ## clone original-map to fill-map for refill() ##
-    fmap = [omap[i][:] for i in range(height+2)]
-    fmap[ybox][xbox], fmap[yman][xman] = 1, 0
-    refill(xman, yman)
-    compass = chk_bx(xbox, ybox)
+class Notation(IntEnum):
+    FLOOR = 0
+    WALL = 1
+    BOX = 2
+    GOAL = 3
+    MAN = 4
 
-    ## to see the recursive flow, enable the next line ##
-    # print('box', xbox, ybox, ' man', xman, yman, ' ', compass, move)
-    if chk_hs(xbox, ybox, compass, move):
-        move += 1
-        if compass[0] == 'N':
-            rechk_mv(xbox, ybox-1, xbox, ybox, move)
-        if compass[1] == 'E':
-            rechk_mv(xbox+1, ybox, xbox, ybox, move)
-        if compass[2] == 'W':
-            rechk_mv(xbox-1, ybox, xbox, ybox, move)
-        if compass[3] == 'S':
-            rechk_mv(xbox, ybox+1, xbox, ybox, move)
 
-def chk_bx(x, y):
-    '''check if that the man can move the box, return in compass direction'''
-    compass = '    '
-    if fmap[y+1][x] == 4 and (fmap[y-1][x] == 0 or fmap[y-1][x] == 4):
-        compass = 'N' + compass[1:4]
-    if fmap[y][x-1] == 4 and (fmap[y][x+1] == 0 or fmap[y][x+1] == 4):
-        compass = compass[0:1] + 'E' + compass[2:4]
-    if fmap[y][x+1] == 4 and (fmap[y][x-1] == 0 or fmap[y][x-1] == 4):
-        compass = compass[0:2] + 'W' + compass[3:4]
-    if fmap[y-1][x] == 4 and (fmap[y+1][x] == 0 or fmap[y+1][x] == 4):
-        compass = compass[0:3] + 'S'
-    return compass
+class Point(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-def chk_hs(x, y, compass, move):
-    '''check history-map if the box has been visited, return true if not'''
-    for i in range(len(hmap[y][x])):
-        if compass == hmap[y][x][i]:
-            if move >= nmap[y][x][i]:
-                return False
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def shift(self, dx, dy):
+        return type(self)(self.x+dx, self.y+dy)
+
+
+class Grid(object):
+    DIRECTIONS = [ (0, -1, 'N'),
+                   (+1, 0, 'E'),
+                   (-1, 0, 'W'),
+                   (0, +1, 'S') ]
+
+    def __init__(self, grid):
+        self.grid = grid
+        self.height = len(grid)
+        self.width = len(next(iter(grid)))
+
+    def __getitem__(self, point):
+        return self.grid[point.y][point.x]
+
+    def __setitem__(self, point, value):
+        self.grid[point.y][point.x] = value
+
+    def has_coord(self, point):
+        return 0 <= point.x < self.width and 0 <= point.y < self.height
+
+
+class Puzzle(object):
+    def __init__(self, layout, goal):
+        self.goal = goal
+        self.layout = Grid(layout)
+        self.history = None
+
+    def walk(self, man, reachable):
+        if reachable.has_coord(man):
+            if reachable[man] == Notation.FLOOR:
+                reachable[man] = Notation.MAN
+                for dx, dy, _ in Grid.DIRECTIONS:
+                    self.walk(man.shift(dx, dy), reachable)
+
+    def pushable_directions(self, box, reachable):
+        compass = ''
+        for dx, dy, name in Grid.DIRECTIONS:
+            before = box.shift(-dx, -dy)
+            after = box.shift(dx, dy)
+            if ( reachable.has_coord(before) and reachable.has_coord(after)
+                 and reachable[before] == Notation.MAN
+                 and self.layout[after] == Notation.FLOOR ):
+                compass += name
             else:
-                nmap[y][x][i] = move
-                return True
-    hmap[y][x].append(compass)
-    nmap[y][x].append(move)
-    return True
+                compass += ' '
+        return compass
 
-def result():
-    '''handle the many approaches and no-approach'''
-    if finalmove != []:
-        return min(finalmove)
-    else:
-        return -1
+    def push(self, box, man, move=0):
+        if box == self.goal:
+            return [move]
+        reachable = deepcopy(self.layout)
+        reachable[box] = Notation.WALL
+        self.walk(man, reachable)
+        compass = self.pushable_directions(box, reachable)
+        answers = []
+        if not self.is_visited(box, compass, move):
+            for dx, dy, name in Grid.DIRECTIONS:
+                if name in compass:
+                    answers += self.push(box.shift(dx, dy), box, move+1)
+        return answers
 
-################################################################################
+    def is_visited(self, box, compass, move):
+        if compass not in self.history[box] or move < self.history[box][compass]:
+            self.history[box][compass] = move
+            return False
+        return True
 
-import re
+    def solve(self, box, man):
+        self.history = Grid([ [{} for _ in range(self.layout.width)]
+                                  for _ in range(self.layout.height) ])
+        answers = self.push(box, man)
+        return min(answers) if answers else -1
 
-while True:
-    raw = input()
-    raw = re.split(' +', raw)
-    width, height = int(raw[0]), int(raw[1])
-    if width == 0 and height == 0:
-        break
 
-    ## create original-map: the man, the goal, and the box are not include ##
-    ## the map also wrap with 1 to prevent the out-of-bound problems ##
-    omap = []
-    omap.append([1 for n in range(width+2)])
-    for i in range(height):
-        raw = input()
-        raw = re.split(' +', raw)
-        for j in range(width):
-            raw[j] = int(raw[j])
-            ## kept only position of each and remove them ##
-            if raw[j] == 4:    # the man
-                xman, yman = j+1, i+1
-                raw[j] = 0
-            if raw[j] == 3:    # the goal
-                xfin, yfin = j+1, i+1
-                raw[j] = 0
-            if raw[j] == 2:    # the box
-                xbox, ybox = j+1, i+1
-                raw[j] = 0
-        omap.append([1] + [raw[n] for n in range(width)] + [1])
-    omap.append([1 for n in range(width+2)])
+def extract_information(grid):
+    info = [None for _ in range(3)]
+    for y, line in enumerate(grid):
+        for x, value in enumerate(line):
+            if value >= 2:
+                info[value-2] = Point(x, y)
+                grid[y][x] = 0
+    return (grid, *info)
 
-    ## also create history-map to check visited, and n-map for move number ##
-    hmap = [[[] for i in range(width+2)] for j in range(height+2)]
-    nmap = [[[] for i in range(width+2)] for j in range(height+2)]
-    finalmove = []
 
-    ## main routine start here! (its recursive!!!) ##
-    rechk_mv(xbox, ybox, xman, yman)
-    print(result())
+def main():
+    while True:
+        width, height = [int(n) for n in input().split()]
+        if (width, height) == (0, 0):
+            break
+        grid = [[int(n) for n in input().split()] for _ in range(height)]
+        grid, box, goal, man = extract_information(grid)
+        print(Puzzle(grid, goal).solve(box, man))
+
+
+if __name__ == '__main__':
+    main()

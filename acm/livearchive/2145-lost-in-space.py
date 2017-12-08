@@ -1,91 +1,50 @@
-import math
+#!/usr/bin/env python3
 
-class point:
-    '''point class that contain position of x, y, z'''
-    x = 0
-    y = 0
-    z = 0
+from math import isclose
+from itertools import permutations
 
-def norm(p, q):
-    '''actually, this is Euclidean distance, but norm is much shorter name'''
-    return math.sqrt((p.x - q.x)**2 + (p.y - q.y)**2 + (p.z - q.z)**2)
 
-def mid(a, b, c):
-    '''return mid value of 3 argument'''
-    return sorted([a, b, c])[1]
+class Triangle(object):
+    def __init__(self, sides):
+        self.sides = list(sides)
 
-def normalized(a, b, c):
-    '''retun 3 values which each are exactly, lesser than and greater than 1'''
-    d = mid(a, b, c)
-    return a/d, b/d, c/d
+    def __repr__(self):
+        return '{:.4f},{:.4f},{:.4f}'.format(*self.sides)
 
-def match(ijk, pqr):
-    '''check if triangle ijk match pqr, return matched point order on success'''
-    so = sorted(ijk)
-    sc = sorted(pqr)
-    err = 0.00001
-    ## check triangle matched ##
-    if so[0]-err <= sc[0] <= so[0]+err and so[2]-err <= sc[2] <= so[2]+err:
-        ## check point matching ##
-        if pqr[0]-err <= ijk[0] <= pqr[0]+err:
-            if pqr[1]-err <= ijk[1] <= pqr[1]+err:
-                return 'ijk'
-            else:
-                return 'ikj'
-        elif pqr[1]-err <= ijk[0] <= pqr[1]+err:
-            if pqr[2]-err <= ijk[1] <= pqr[2]+err:
-                return 'kij'
-            else:
-                return 'jik'
-        else:
-            if pqr[0]-err <= ijk[1] <= pqr[0]+err:
-                return 'jki'
-            else:
-                return 'kji'
-    return False
+    @classmethod
+    def from_sides(cls, sides):
+        factor = 1/sides[0]
+        return cls(factor*side for side in sides)
 
-################################################################################
+    @classmethod
+    def from_points(cls, p, q, r):
+        return cls.from_sides([q.distance(r), r.distance(p), p.distance(q)])
 
-import re
+    def is_similar(self, other):
+        return all(isclose(a, b, rel_tol=1e-4) for a, b in zip(self.sides, other.sides))
 
-raw = input()
-for no_i in range(int(raw)):
-    raw = input()
-    raw = re.split(' +', raw)
-    qr = float(raw[0])
-    rp = float(raw[1])
-    pq = float(raw[2])
-    pqr = normalized(qr, rp, pq)
 
-    ## create list of points name lpoint ##
-    raw = input()
-    npoint = int(raw)
-    lpoint = [point() for m in range(npoint)]
-    for i in range(npoint):
-        raw = input()
-        raw = re.split(' +', raw)
-        lpoint[i].x = float(raw[0])
-        lpoint[i].y = float(raw[1])
-        lpoint[i].z = float(raw[2])
+class Point(object):
+    def __init__(self, positions):
+        pos = iter(positions)
+        self.x = next(pos)
+        self.y = next(pos)
+        self.z = next(pos)
 
-    ## loop through all set of 3 points ##
-    for i in range(npoint-2):
-        for j in range(i+1, npoint-1):
-            for k in range(j+1, npoint):
-                jk = norm(lpoint[j], lpoint[k])
-                ki = norm(lpoint[k], lpoint[i])
-                ij = norm(lpoint[i], lpoint[j])
-                ijk = normalized(jk, ki, ij)
+    def distance(self, other):
+        return ((self.x-other.x)**2 + (self.y-other.y)**2 + (self.z-other.z)**2)**0.5
 
-                ## try get and order of matching ##
-                order = match(ijk, pqr)
-                if order:
-                    for c in order:
-                        if c == 'i':
-                            print(i+1, end='')
-                        elif c == 'j':
-                            print(j+1, end='')
-                        else:
-                            print(k+1, end='')
-                        print(end=' ')
-                    print('')
+
+def main():
+    for _ in range(int(input())):
+        triangle = Triangle.from_sides([float(n) for n in input().split()])
+        points = [Point(float(n) for n in input().split()) for _ in range(int(input()))]
+        for indexs in permutations(range(len(points)), 3):
+            suspect = Triangle.from_points(*[points[i] for i in indexs])
+            if triangle.is_similar(suspect):
+                print(' '.join(str(i+1) for i in indexs))
+                break
+
+
+if __name__ == '__main__':
+    main()
