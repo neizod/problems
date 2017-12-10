@@ -1,77 +1,69 @@
-def show(triangle, center=True):
-    '''print a readable triangle, for fast debugging purpose'''
-    for line in triangle:
-        if center:
-            print(' '*(n-(len(line)+1)//2), end='')
-        for each in line:
-            print(each, end='')
-        print('')
+#!/usr/bin/env python3
 
-def retri_dn(i, j, s=1):
-    '''recursive function finding bigger triangle downward'''
-    if i+s <= n-j//2-1:
-        chk = True
-        if triangle[i+s][j] == 1:
-            for a in range(s):
-                for b in range(2):
-                    if triangle[i+a][j+2*(s-1-a)+(b+1)] == 0:
-                        chk = False
+'''
+(!) Note: This Python solution is **NOT** fast enough to pass the test.
+	  The same algorithm in C++, however, will pass them in a breeze.
+'''
+
+
+from enum import Enum
+from itertools import count
+
+
+class Notation(str, Enum):
+    WHITE = '-'
+    BLACK = '#'
+
+
+class Triangle(object):
+    def __init__(self, layout):
+        self.layout = layout
+
+    def has_coord(self, x, y):
+        return 0 <= y < len(self.layout) and 0 <= x < len(self.layout[y])
+
+    def iter_expand_down(self, x, y, size):
+        if not self.has_coord(x, y+size):
+            yield Notation.BLACK
         else:
-            return s
-        if chk:
-            return retri_dn(i, j, s+1)
-    return s
+            yield self.layout[y+size][x]
+            for dy in reversed(range(size)):
+                px = 2*(size-dy) - 1
+                for dx in range(2):
+                    yield self.layout[y+dy][x+px+dx]
 
-def retri_up(i, j, s=1):
-    '''recursive function finding bigger triangle upward'''
-    if i-s >= 0 and j+2*s <= 2*(n-i-1):
-        chk = True
-        if triangle[i-s][j+2*s] == 1:
-            for a in range(s):
-                for b in range(2):
-                    if triangle[i-a][j+2*s-b] == 0:
-                        chk = False
+    def iter_expand_up(self, x, y, size):
+        if not self.has_coord(x, y+size) or not self.has_coord(x-2*size, y+size):
+            yield Notation.BLACK
         else:
-            return s
-        if chk:
-            return retri_up(i, j, s+1)
-    return s
+            for dx in reversed(range(2*size+1)):
+                yield self.layout[y+size][x-dx]
 
-################################################################################
+    def find_largest(self, expand_method, x, y, size=0):
+        if all(piece == Notation.WHITE for piece in expand_method(x, y, size)):
+            return self.find_largest(expand_method, x, y, size+1)
+        return size
 
-scene = 0
-while True:
-    scene += 1
-    raw = input()
-    n = int(raw)
-    if n == 0:
-        break
+    def largest_sub_triangle(self):
+        answers = []
+        for y, _ in enumerate(self.layout):
+            for x, _ in enumerate(self.layout[y]):
+                if x%2 == 0:
+                    answers += [self.find_largest(self.iter_expand_down, x, y)]
+                else:
+                    answers += [self.find_largest(self.iter_expand_up, x, y)]
+        return max(answers)**2
 
-    ## create triangle in form of list, the 1st index of each row always be 0 ##
-    triangle = [[] for i in range(n)]
-    for i in range(n):
-        raw = input()
-        for j in range(i, 2*n-i-1):
-            if raw[j] == '#':
-                triangle[i].append(0)
-            else:
-                triangle[i].append(1)
-    ## uncomment below to see the triangle ##
-    # show(triangle)
 
-    ## create list of biggest size of each small triangle ##
-    bigtri = []
-    ## loop through all small triangle ##
-    for i in range(n):
-        for j in range(0, 2*(n-i)-1):
-            ## and make sure to use upward or downward checking ##
-            if j%2 == 0:
-                if triangle[i][j] == 1:
-                    bigtri.append(retri_dn(i, j))
-            else:
-                if triangle[i][j] == 1:
-                    bigtri.append(retri_up(i, j))
- 
-    print('Triangle #{}'.format(scene))
-    print('The largest triangle area is {}.'.format(max(bigtri)**2))
-    print('')
+def main():
+    for test in count(1):
+        n = int(input())
+        if n == 0:
+            break
+        triangle = Triangle([input().strip() for _ in range(n)])
+        answer = triangle.largest_sub_triangle()
+        print('Triangle #{}\nThe largest triangle area is {}.\n'.format(test, answer))
+
+
+if __name__ == '__main__':
+    main()

@@ -56,14 +56,21 @@ class RandomWalk(object):
 
 
 def main():
-    w, h = [int(i) for i in input().split()]
-    prob = [int(i)/100 for i in input().split()]
-    grid = [input().strip() for _ in range(h)]
-
-    random_walk = RandomWalk(grid, prob, w, h)
-    for answer in random_walk():
-        if answer != 0:
-            print('{:.9f}'.format(answer))
+    try:
+        first_test = True
+        while True:
+            w, h = [int(i) for i in input().split()]
+            prob = [int(i)/100 for i in input().split()]
+            grid = [input().strip() for _ in range(h)]
+            random_walk = RandomWalk(grid, prob, w, h)
+            if not first_test:
+                print()
+            for answer in random_walk():
+                if answer != 0:
+                    print('{:.9f}'.format(answer))
+            first_test = False
+    except EOFError:
+        pass
 
 
 if __name__ == '__main__':

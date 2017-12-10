@@ -1,19 +1,11 @@
-import re
-import math
+#!/usr/bin/env python3
 
-raw = input()
-scene = int(raw)
+from operator import mul
+from functools import reduce
 
-for i in range(scene):
-    raw = input()
-    raw = re.split('\W+', raw)
-    size = int(raw[0]) * int(raw[1])
 
-    ## this is mathematics approch, try it yourself and observe! ##
+for test in range(int(input())):
+    size = reduce(mul, [int(n) for n in input().split()])
     if size%2 == 1:
-        size = size - 1 + math.sqrt(2)
-
-    ## print the answer ##
-    print('Scenario #{}'.format(i+1))
-    print('{:.2f}'.format(size))
-    print()
+        size += 2**0.5 - 1
+    print('Scenario #{}:\n{:.2f}\n'.format(test+1, size))

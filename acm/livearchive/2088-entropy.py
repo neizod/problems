@@ -1,11 +1,16 @@
+#!/usr/bin/env python3
+
 from collections import Counter
 
-class Node:
+
+class Node(object):
     def is_terminated(self):
         return self.left is None and self.right is None
 
     def total(self, depth=0):
         if self.is_terminated():
+            if depth == 0:
+                depth = 1
             return self.value * depth
         return self.left.total(depth+1) + self.right.total(depth+1)
 
@@ -33,20 +38,23 @@ def make_tree(queue):
     import heapq as hq
     queue = queue[:]
     hq.heapify(queue)
-    while queue:
-        if len(queue) == 1:
-            break
+    while len(queue) > 1:
         left = hq.heappop(queue)
         right = hq.heappop(queue)
         hq.heappush(queue, Node.from_leaves(left, right))
     return queue.pop()
 
 
-while True:
-    raw = input().strip()
-    if raw == 'END':
-        break
-    tree = make_tree([Node(k, v) for k, v in Counter(raw).most_common()])
-    full = 8 * tree.value
-    entropy = tree.total()
-    print(full, entropy, format(full/entropy, '.1f'))
+def main():
+    while True:
+        raw = input().strip()
+        if raw == 'END':
+            break
+        tree = make_tree([Node(k, v) for k, v in Counter(raw).most_common()])
+        full = 8 * tree.value
+        entropy = tree.total()
+        print('{} {} {:.1f}'.format(full, entropy, full/entropy))
+
+
+if __name__ == '__main__':
+    main()

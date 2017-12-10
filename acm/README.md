@@ -1,11 +1,12 @@
 ACM-ICPC
 ========
 
-    /!\ Caution:
-        Since I don't have the full test case, there might be some bugs.
-        If you have full test case & answer sheet, please raise an issue.
+Ok, now ACM did accept Python, as so many online judge.
+Now I'm capable of Python and C++, so the solution may be vary in langauges.
 
-Original ACM-ICPC require program to be written in Pascal / C / C++ / Java. Since I'm not good with those language, I write it in Python.
+Caution: there may be some Python codes that not fast enough to pass the test,
+or cause run time error since it's too old to test against the judge.
+
 
 Problems Source
 ---------------
