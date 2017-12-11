@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from collections import Counter
+
 
 class Node(object):
     def __init__(self, name, raw_weight, deferred_childs=None):
@@ -12,20 +14,28 @@ class Node(object):
     def __repr__(self):
         return '{} ({}, {})'.format(self.name, self.weight, self.total_weight)
 
+    def fix_total_weight(self, weight):
+        self.weight -= self.total_weight - weight
+
     def calc_total_weight(self):
         self.total_weight = self.weight
         for child in self.childs:
             self.total_weight += child.calc_total_weight()
         return self.total_weight
 
-    def traverse_wrong_weight(self, answers=None):
-        if answers is None:
-            answers = []
-        if self.childs and len({child.total_weight for child in self.childs}) != 1:
-            answers += [self]
+    def find_diff_child(self):
+        count = Counter(child.total_weight for child in self.childs)
+        if len(count) <= 1:
+            return None, None
         for child in self.childs:
-            child.traverse_wrong_weight(answers)
-        return answers
+            if child.total_weight == count.most_common()[1][0]:
+                return child, count.most_common()[0][0]
+
+    def traverse_wrong_weight(self, node=None, correct=None):
+        child, weight = self.find_diff_child()
+        if child:
+            return child.traverse_wrong_weight(child, weight)
+        return node, correct
 
     @classmethod
     def make_hierarchy(cls, nodes):
@@ -51,20 +61,12 @@ def main():
             name, raw_weight, *deferred_childs = line.split()
             nodes += [Node(name, raw_weight, deferred_childs)]
     except EOFError:
-        return Node.make_hierarchy(nodes)
-
-
-def interact_solve(root):
-    root.calc_total_weight()
-    answers = root.traverse_wrong_weight()
-    wrong = answers[-1].childs[3]
-    wrong.weight -= 5
-    root.calc_total_weight()
-    if root.traverse_wrong_weight():
-        raise ValueError('fix wrong node')
-    print(wrong)
+        root = Node.make_hierarchy(nodes)
+        root.calc_total_weight()
+        node, correct = root.traverse_wrong_weight()
+        node.fix_total_weight(correct)
+        print(node.weight)
 
 
 if __name__ == '__main__':
-    root = main()
-    interact_solve(root)
+    main()
