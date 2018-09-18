@@ -36,15 +36,8 @@ pair<string,string> parse(string read_pair) {
 
 Tree* read_tree() {
     Tree* tree = new Tree();
-    while (true) {
-        string read_pair;
-        if (cin.eof()) {
-            exit(EXIT_SUCCESS);
-        }
-        cin >> read_pair;
-        if (read_pair.length() == 2) {
-            break;
-        }
+    string read_pair;
+    while (cin >> read_pair && read_pair.length() > 2) {
         pair<string,string> parsed_pair = parse(read_pair);
         Tree* now = tree;
         for (char dir : parsed_pair.second) {
@@ -65,6 +58,9 @@ Tree* read_tree() {
         } else {
             now->value = "duplicated";
         }
+    }
+    if (!cin) {
+        exit(EXIT_SUCCESS);
     }
     return tree;
 }

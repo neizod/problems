@@ -31,13 +31,8 @@ int find_max_cycle(int start, int stop) {
 
 
 int main(void) {
-    while (!cin.eof()) {
-        int i, j;
-        cin >> i;
-        if (cin.eof()) {
-            break;
-        }
-        cin >> j;
+    int i, j;
+    while (cin >> i >> j) {
         cout << i << " " << j << " " << find_max_cycle(i, j) << endl;
     }
     return 0;

@@ -5,13 +5,8 @@ using namespace std;
 
 
 int main(void) {
-    while (true) {
-        long double n, p;
-        cin >> n;
-        cin >> p;
-        if (cin.eof()) {
-            break;
-        }
+    long double n, p;
+    while (cin >> n >> p) {
         cout << setprecision(0) << fixed << exp(log(p)/n) << endl;
     }
     return 0;

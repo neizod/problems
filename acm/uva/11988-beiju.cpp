@@ -28,12 +28,8 @@ void beiju(string text) {
 
 
 int main(void) {
-    while (true) {
-        string text;
-        cin >> text;
-        if (cin.eof()) {
-            break;
-        }
+    string text;
+    while (cin >> text) {
         beiju(text);
     }
     return 0;

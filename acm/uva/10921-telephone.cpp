@@ -27,12 +27,8 @@ string find_telephone(string memo_phrase) {
 
 
 int main(void) {
-    while (true) {
-        string memo_phrase;
-        cin >> memo_phrase;
-        if (cin.eof()) {
-            break;
-        }
+    string memo_phrase;
+    while (cin >> memo_phrase) {
         cout << find_telephone(memo_phrase) << endl;
     }
     return 0;

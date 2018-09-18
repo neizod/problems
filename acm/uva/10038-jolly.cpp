@@ -19,15 +19,11 @@ string jolly_checker(int size, int elements[]) {
 
 
 int main(void) {
-    while (true) {
-        int size;
-        cin >> size;
+    int size;
+    while (cin >> size) {
         int elements[size];
         for (int i=0; i<size; i++) {
             cin >> elements[i];
-        }
-        if (cin.eof()) {
-            break;
         }
         cout << jolly_checker(size, elements) << endl;
     }

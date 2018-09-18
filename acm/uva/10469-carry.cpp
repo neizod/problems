@@ -3,13 +3,8 @@ using namespace std;
 
 
 int main(void) {
-    while (!cin.eof()) {
-        int n, m;
-        cin >> n;
-        if (cin.eof()) {
-            break;
-        }
-        cin >> m;
+    int n, m;
+    while (cin >> n >> m) {
         cout << (n ^ m) << endl;
     }
     return 0;
