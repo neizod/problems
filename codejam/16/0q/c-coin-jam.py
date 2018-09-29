@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 
-import mathapi      # //github.com/neizod/mathapi
-
 bin2base = lambda num, base: int(bin(num)[2:], base)
 
 
-def real_factor(num):
-    factors = mathapi.factorized(num)
-    if len(factors) == 1:
-        raise ValueError
-    return factors[0]
+def small_proper_factor(num):
+    for prime in [2, 3, 5, 7]:
+        if num % prime == 0:
+            return prime
+    raise ValueError
 
 
 def all_bases(val):
-    return [real_factor(bin2base(val, b)) for b in range(2, 11)]
+    return [small_proper_factor(bin2base(val, b)) for b in range(2, 11)]
 
 
 def find_valid_coins(n, j):
